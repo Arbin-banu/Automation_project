@@ -47,5 +47,28 @@ mv $name-$logformat-${timestamp}.$type /tmp
 
 aws s3 	cp /tmp/$name-$logformat-${timestamp}.$type  s3://s3-arbin/arbin/$name-$logformat-${timestamp}.$type
 
+dir="/var/www/html"
+
+if [[ ! -f ${dir}/inventory.html ]]; then 
+
+echo -e "Log Type\t\tTime Created\t\ttype\t\tsize" > ${dir}/inventory.html
+
+fi
+
+if [[ -f ${dir}/inventory.html ]] 
+then
 
 
+size=$(du -h /tmp/${name}-$logformat-${timestamp}.$type | awk '{print $1}')
+
+echo -e "$logformat\t-\t${timestamp}\t-\t$type\t-\t${size}" >> ${dir}/inventory.html
+
+fi
+
+
+
+if [[ ! -f /etc/cron.d/automation ]]; then
+
+echo "0 0 * * * /root/automation.sh" > /etc/cron.d/automation
+
+fi
